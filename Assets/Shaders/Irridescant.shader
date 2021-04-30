@@ -6,29 +6,35 @@ Shader "Custom/Irridescant"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
-        
+        _Alpha("Alpha", Range(0,1)) = 1
+
         [Space(20)][Header(ColorMap)][Space(20)]
-        _ColorMap("Colormap", 2D) = "color" {}
+        _ColorMap("ColorMap", 2D) = "color" {}
         _ColorBlend("BlendStrength", Range(0.1,1)) = 0.1
 
 
         [Space(20)][Header(BumpMap and BumpPower)][Space(20)]
-        _BumpMap("Bumpmap", 2D) = "bump" {}
-        _BumpPower("BumpPower",Range(0.1,1)) = 0.1
-            
-        [Space(20)][Header(Snells Law)][Space(20)]
-        _N1("N1", Range(0.1,2)) = 1
-        _N2("N2", Range(0.1,2)) = 1
+        _BumpMap("BumpMap", 2D) = "bump" {}
+        _BumpPower("BumpPower",Range(0.001,1)) = 0.1
+
+        [Space(20)][Header(DistortionMap and Power)][Space(20)]
+        _DistMap("DistortionMap", 2D) = "dist" {}
+        _DistPower("DistortionPower", Range(0.1,5)) = 1
+        
 
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "Queue" = "Transparent" "RenderType"="Transparent" }
+        //ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
+        Cull front
+
         LOD 200
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows alpha:fade 
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -36,12 +42,14 @@ Shader "Custom/Irridescant"
         sampler2D _MainTex;
         sampler2D _ColorMap;
         sampler2D _BumpMap;
+        sampler2D _DistMap;
 
         struct Input
         {
             float2 uv_MainTex;
             float2 uv_ColorMap;
             float2 uv_BumpMap;
+            float2 uv_DistMap;
             float3 viewDir;
             float3 worldPos;
         };
@@ -50,9 +58,9 @@ Shader "Custom/Irridescant"
         half _Metallic;
         float _ColorBlend;
         float _BumpPower;
+        float _DistPower;
         fixed4 _Color;
-        float _N1;
-        float _N2;
+        float _Alpha;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -66,26 +74,27 @@ Shader "Custom/Irridescant"
         {
             // IN.viewDir.rgb;
 
-            // Albedo comes from a texture tinted by color
+            // Albedo comes from a texture tinted by color            
 
-            /*
-            * one of these is Snell's Law
-            * conflicting sources
-            float critical = asin((_N2 / _N1) * sin(IN.viewDir));*/
-            float critical = (_N1 / _N2) * sin(IN.viewDir);
-            
-
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
+            fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
+            float distMap = tex2D(_DistMap, IN.uv_DistMap);
             fixed3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
-            fixed3 colorMap = (tex2D(_ColorMap, IN.uv_ColorMap));
             normal.z /= _BumpPower;
             o.Normal = normalize(normal);
-            o.Albedo = lerp(c, colorMap, _ColorBlend * critical);
+
+            float4 rim4 = dot(normalize(IN.viewDir.rgb),o.Normal);
+            float2 distortion = distMap * _DistPower;
+            float2 rim2 = 1.0 - saturate(dot(normalize(IN.viewDir.rgb), o.Normal));
+
+            fixed3 colorMap = tex2D(_ColorMap, (rim4.xy * IN.uv_ColorMap.xy + rim2) * distortion);
+
+            //o.Albedo = ((c.rgb + colorMap.rgb + IN.viewDir)/3) * _ColorBlend;
+            o.Albedo = lerp(c, colorMap, _ColorBlend);
             //o.Albedo = c.rgb * normal.rgb;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Alpha = c.a;
+            o.Alpha = _Alpha;
         }
         ENDCG
     }
