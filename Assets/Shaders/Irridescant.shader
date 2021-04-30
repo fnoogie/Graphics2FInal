@@ -15,10 +15,10 @@ Shader "Custom/Irridescant"
         [Space(20)][Header(BumpMap and BumpPower)][Space(20)]
         _BumpMap("Bumpmap", 2D) = "bump" {}
         _BumpPower("BumpPower",Range(0.1,1)) = 0.1
-            /*
+            
         [Space(20)][Header(Snells Law)][Space(20)]
-        _N1("N1", Range(0.1,2)) = 1;
-        _N2("N2", Range(0.1,2)) = 1;*/
+        _N1("N1", Range(0.1,2)) = 1
+        _N2("N2", Range(0.1,2)) = 1
 
     }
     SubShader
@@ -51,6 +51,8 @@ Shader "Custom/Irridescant"
         float _ColorBlend;
         float _BumpPower;
         fixed4 _Color;
+        float _N1;
+        float _N2;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -65,12 +67,20 @@ Shader "Custom/Irridescant"
             // IN.viewDir.rgb;
 
             // Albedo comes from a texture tinted by color
+
+            /*
+            * one of these is Snell's Law
+            * conflicting sources
+            float critical = asin((_N2 / _N1) * sin(IN.viewDir));*/
+            float critical = (_N1 / _N2) * sin(IN.viewDir);
+            
+
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
             fixed3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
             fixed3 colorMap = (tex2D(_ColorMap, IN.uv_ColorMap));
             normal.z /= _BumpPower;
             o.Normal = normalize(normal);
-            o.Albedo = lerp(c, colorMap, _ColorBlend);
+            o.Albedo = lerp(c, colorMap, _ColorBlend * critical);
             //o.Albedo = c.rgb * normal.rgb;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;

@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 1854714672}
   - component: {fileID: 1854714671}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Iridescient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
