@@ -19,7 +19,7 @@ Shader "Custom/Irridescant"
 
         [Space(20)][Header(DistortionMap and Power)][Space(20)]
         _DistMap("DistortionMap", 2D) = "dist" {}
-        _DistPower("DistortionPower", Range(0.1,5)) = 1
+        _DistPower("DistortionPower", Range(0.1, 10)) = 1
         
 
     }
