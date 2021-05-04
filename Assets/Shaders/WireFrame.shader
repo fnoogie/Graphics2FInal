@@ -16,7 +16,6 @@ Shader "Custom/WireframeShader"
 		Pass
 		{
 		CGPROGRAM
-		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
 		#include "UnityCG.cginc"
@@ -79,11 +78,13 @@ Shader "Custom/WireframeShader"
 			float2 edge2 = p1 - p0;
 
 			float area = abs(edge1.x * edge2.y - edge1.y * edge2.x);
+			//animate wire thickness
 			_WireThickness = _WireThickness * (1 - _Animate) + (_SinTime.w * 300 + 350) * _Animate;
 			float wireThickness = 800 - _WireThickness;
 
 			g2f o;
 
+			//save triangle data
 			o.uv = i[0].uv;
 			o.pos = i[0].pos;
 			o.dist.xyz = float3((area / length(edge0)), 0.0, 0.0) * o.pos.w * wireThickness;
@@ -109,7 +110,6 @@ Shader "Custom/WireframeShader"
 
 			float4 baseColor = tex2D(_MainTex, i.uv);
 
-			// Early out if we know we are not on a line segment.
 			if (minDistanceToEdge > 0.9)
 			{
 				return fixed4(baseColor.rgb,0);

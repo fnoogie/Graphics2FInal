@@ -36,7 +36,8 @@ public class CameraMovement : MonoBehaviour
         {
             upDown = 0;
         }
-        transform.position += (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal") + transform.up * upDown) * moveSpeed * Time.deltaTime;        
+        transform.position += (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal") + transform.up * upDown) * moveSpeed * Time.deltaTime;
+
         if (Input.GetMouseButton(0))
         {
             float rotationX = -Input.GetAxis("Mouse Y") * rotateSensitivity;

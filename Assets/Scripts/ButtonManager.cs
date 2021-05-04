@@ -92,6 +92,7 @@ public class ButtonManager : MonoBehaviour
             GameObject currentObject = demoObjects[i];
             for (int j = 0; j < currentObject.GetComponent<MaterialHolder>().materials.Length; j++)
             {
+                //change animation for all shaders to on or off depending on the ternary operator
                 currentObject.GetComponent<MaterialHolder>().materials[j].SetFloat("_Animate", onOff);
             }
         }
