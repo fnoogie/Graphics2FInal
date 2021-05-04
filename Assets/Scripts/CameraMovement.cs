@@ -36,10 +36,12 @@ public class CameraMovement : MonoBehaviour
         {
             upDown = 0;
         }
-        transform.position += (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal") + transform.up * upDown) * moveSpeed * Time.deltaTime;
-        camera.transform.position += camera.transform.forward * zoomSpeed * Input.GetAxis("Mouse ScrollWheel");
-        float rotationX = -Input.GetAxis("Mouse Y") * rotateSensitivity;
-        float rotationY = Input.GetAxis("Mouse X") * rotateSensitivity;
-        camera.transform.localEulerAngles += new Vector3(rotationX, rotationY, 0);
+        transform.position += (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal") + transform.up * upDown) * moveSpeed * Time.deltaTime;        
+        if (Input.GetMouseButton(0))
+        {
+            float rotationX = -Input.GetAxis("Mouse Y") * rotateSensitivity;
+            float rotationY = Input.GetAxis("Mouse X") * rotateSensitivity;
+            camera.transform.localEulerAngles += new Vector3(rotationX, rotationY, 0);
+        }
     }
 }

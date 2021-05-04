@@ -20,6 +20,8 @@ Shader "Custom/Irridescant"
         [Space(20)][Header(DistortionMap and Power)][Space(20)]
         _DistMap("DistortionMap", 2D) = "dist" {}
         _DistPower("DistortionPower", Range(0.1, 10)) = 1
+
+        _Animate("Animate", Range(0,1)) = 0
         
 
     }
@@ -34,7 +36,7 @@ Shader "Custom/Irridescant"
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows alpha:fade 
+        #pragma surface surf Standard fullforwardshadows alpha:fade vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -65,10 +67,17 @@ Shader "Custom/Irridescant"
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
         // #pragma instancing_options assumeuniformscaling
-        UNITY_INSTANCING_BUFFER_START(Props)
-            // put more per-instance properties here
-        UNITY_INSTANCING_BUFFER_END(Props)
+		UNITY_INSTANCING_BUFFER_START(Props)
+			// put more per-instance properties here
+			UNITY_INSTANCING_BUFFER_END(Props)
 
+			float4x4 rotation;
+		float _Animate;
+			void vert(inout appdata_full v)
+		{
+			rotation = float4x4(1 * (1 - _Animate) + _CosTime.x * _Animate, 0.f, -_SinTime.x * _Animate, 0.f, 0.f, 1.f, 0.f, 0.f, _SinTime.x * _Animate, 0, 1 * (1 - _Animate) + _CosTime.x * _Animate, 0.f, 0.f, 0.f, 0.f, 1.f);
+			v.vertex = mul(v.vertex, rotation);
+		}
             ///the main function
         void surf (Input IN, inout SurfaceOutputStandard o)
         {

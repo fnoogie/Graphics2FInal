@@ -4,7 +4,7 @@ using System;
 [ExecuteInEditMode, ImageEffectAllowedInSceneView]
 public class DoFEffect : MonoBehaviour
 {
-	[Range(0.1f, 20f)]
+	[Range(-5f, 10f)]
 	public float focusDist = 10f;
 	[Range(0.1f, 20f)]
 	public float focusRange = 3f;
@@ -17,6 +17,7 @@ public class DoFEffect : MonoBehaviour
 	const int postFilterPass = 3;
 	const int combinePass = 4;
 
+    float scrollMultiplier = 4.0f;
 	[HideInInspector]
 	public Shader dofShader;
 
@@ -57,4 +58,10 @@ public class DoFEffect : MonoBehaviour
 		RenderTexture.ReleaseTemporary(tex1);
 		RenderTexture.ReleaseTemporary(tex2);
 	}
+
+    void Update()
+    {
+        focusDist += Input.GetAxis("Mouse ScrollWheel") * scrollMultiplier;
+        focusDist = Mathf.Clamp(focusDist, -5.0f, 10.0f);
+    }
 }

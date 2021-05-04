@@ -5,56 +5,93 @@ using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
-    public Button BevelButton;
+    public Button OutlineButton;
     public Button IridescentButton;
     public Button DepthofFeildButton;
-    public Button TesselationButton;
+    public Button WireFrameButton;
     public Button AnimationButton;
     public Button SceneCullingButton;
+
+    bool animating;
+    GameObject[] demoObjects;
 
     // Start is called before the first frame update
     void Start()
     {
-        BevelButton.onClick.AddListener(Bevel);
+        demoObjects = GameObject.FindGameObjectsWithTag("DemoObject");
+        OutlineButton.onClick.AddListener(Outline);
         IridescentButton.onClick.AddListener(Iridescent);
         DepthofFeildButton.onClick.AddListener(DepthofFeild);
-        TesselationButton.onClick.AddListener(Tesselation);
+        WireFrameButton.onClick.AddListener(Wireframe);
         AnimationButton.onClick.AddListener(Animation);
         SceneCullingButton.onClick.AddListener(SceneCulling);
     }
 
-    void Bevel()
+    void Outline()
     {
-        Debug.Log("Bevel things");
+        MaterialSwap(1);
+        DoF(false);
     }
 
     void Iridescent()
     {
-        Debug.Log("Iridescent things");
+        MaterialSwap(2);
+        DoF(false);
     }
 
-    void DepthofFeild()
+    void Wireframe()
     {
-        Debug.Log("DepthofFeild things");
+        MaterialSwap(3);
+        DoF(false);
     }
 
-    void Tesselation()
-    {
-        Debug.Log("Tesselation things");
+    void MaterialSwap(int index)
+    {    
+        for(int i = 0; i < demoObjects.Length; i++)
+        {
+            GameObject currentObject = demoObjects[i];
+            if (currentObject.GetComponent<MeshRenderer>().material.shader == currentObject.GetComponent<MaterialHolder>().materials[index].shader)
+            {
+                currentObject.GetComponent<MeshRenderer>().material = currentObject.GetComponent<MaterialHolder>().materials[0];
+            }
+            else
+            {
+                currentObject.GetComponent<MeshRenderer>().material = currentObject.GetComponent<MaterialHolder>().materials[index];
+            }
+        }
     }
 
     void Animation()
     {
-        Debug.Log("Animation things");
+        animating = !animating;
+        Animate(animating);
+    }
+
+    void DepthofFeild()
+    {
+        MaterialSwap(0);
+        DoF(true);
+    }
+
+    void DoF(bool onOff)
+    {
+        Camera.main.GetComponent<DoFEffect>().enabled = onOff;
+    }
+
+    void Animate(bool animateObjects)
+    {
+        int onOff = animateObjects ? 1 : 0;
+        for (int i = 0; i < demoObjects.Length; i++)
+        {
+            GameObject currentObject = demoObjects[i];
+            for (int j = 0; j < currentObject.GetComponent<MaterialHolder>().materials.Length; j++)
+            {
+                currentObject.GetComponent<MaterialHolder>().materials[j].SetFloat("_Animate", onOff);
+            }
+        }
     }
 
     void SceneCulling()
-    {
-        Debug.Log("SceneCulling things");
-    }
-
-    // Update is called once per frame
-    void Update()
     {
         
     }
