@@ -10,9 +10,9 @@ public class ButtonManager : MonoBehaviour
     public Button DepthofFeildButton;
     public Button WireFrameButton;
     public Button AnimationButton;
-    public Button SceneCullingButton;
+    public Button CubeWaveButton;
 
-    bool animating;
+    bool animating, toggleDoF, toggleCubeWave;
     GameObject[] demoObjects;
 
     // Start is called before the first frame update
@@ -24,7 +24,7 @@ public class ButtonManager : MonoBehaviour
         DepthofFeildButton.onClick.AddListener(DepthofFeild);
         WireFrameButton.onClick.AddListener(Wireframe);
         AnimationButton.onClick.AddListener(Animation);
-        SceneCullingButton.onClick.AddListener(SceneCulling);
+        CubeWaveButton.onClick.AddListener(CubeWave);
     }
 
     void Outline()
@@ -46,19 +46,20 @@ public class ButtonManager : MonoBehaviour
     }
 
     void MaterialSwap(int index)
-    {    
-        for(int i = 0; i < demoObjects.Length; i++)
+    {
+        
+        for (int i = 0; i < demoObjects.Length; i++)
         {
             GameObject currentObject = demoObjects[i];
             if (currentObject.GetComponent<MeshRenderer>().material.shader == currentObject.GetComponent<MaterialHolder>().materials[index].shader)
             {
-                currentObject.GetComponent<MeshRenderer>().material = currentObject.GetComponent<MaterialHolder>().materials[0];
+                index = 0;
             }
-            else
-            {
                 currentObject.GetComponent<MeshRenderer>().material = currentObject.GetComponent<MaterialHolder>().materials[index];
-            }
+            
         }
+        GameObject.Find("Main Camera").GetComponent<SineWaveCubes>().material = demoObjects[2].GetComponent<MaterialHolder>().materials[index];
+        GameObject.Find("Main Camera").GetComponent<SineWaveCubes>().index = index;
     }
 
     void Animation()
@@ -70,7 +71,8 @@ public class ButtonManager : MonoBehaviour
     void DepthofFeild()
     {
         MaterialSwap(0);
-        DoF(true);
+        toggleDoF = !toggleDoF;
+        DoF(toggleDoF);
     }
 
     void DoF(bool onOff)
@@ -91,8 +93,9 @@ public class ButtonManager : MonoBehaviour
         }
     }
 
-    void SceneCulling()
+    void CubeWave()
     {
-        
+        toggleCubeWave = !toggleCubeWave;
+        GameObject.Find("Main Camera").GetComponent<SineWaveCubes>().CalculateOnShader = toggleCubeWave;
     }
 }

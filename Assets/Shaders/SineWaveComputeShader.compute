@@ -1,0 +1,41 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel FunctionKernel
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+RWStructuredBuffer<float3> _Positions;
+uint _Resolution;
+float _Step, _Time;
+
+const static float PI = 3.14159265;
+float2 GetUV(uint3 id)
+{
+    return (id.xy + 0.5) * _Step - 1.0;
+}
+
+void setPosition(uint3 id, float3 pos)
+{
+    if(id.x < _Resolution && id.y < _Resolution)
+        _Positions[id.x + id.y * _Resolution] = pos;
+}
+
+float3 wave(float u, float v, float t)
+{
+    float3 p;
+    p.x = u;
+    p.y = sin(PI * (u + v + t));
+    p.z = v;
+    return p;
+}
+
+[numthreads(1, 1, 1)]
+void FunctionKernel (uint3 id : SV_DispatchThreadID)
+{
+    
+    float3 position = float3(sin(_time + _Offset), sin(_time + _Offset), sin(_time + _Offset));
+    float2 uv = getUV(id);
+    setPosition(id, wave(uv.x, uv.y, _Time);
+    Result[id.xy] = float4(position, 1);
+    
+}

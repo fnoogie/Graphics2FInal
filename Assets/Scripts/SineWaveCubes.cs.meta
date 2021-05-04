@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: c818076b206414941ab4b81e3b09e889
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - WaveShader: {fileID: 7200000, guid: 07517e8c644ab5c4f8dbe3c2efc32bfc, type: 3}
+  - cubePrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
