@@ -56,6 +56,7 @@ public class SineWaveCubes : MonoBehaviour
         for (int i = 0; i < numCubes; i++)
         {
             cubes[i].GetComponent<MeshRenderer>().enabled = !CalculateOnShader;
+            cubes[i].GetComponent<MeshRenderer>().material = cubes[i].GetComponent<MaterialHolder>().materials[index];
             if (CalculateOnShader)
             {
                 WaveShader.SetFloat("_Offset", i);

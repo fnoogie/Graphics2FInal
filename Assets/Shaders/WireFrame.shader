@@ -79,6 +79,7 @@ Shader "Custom/WireframeShader"
 			float2 edge2 = p1 - p0;
 
 			float area = abs(edge1.x * edge2.y - edge1.y * edge2.x);
+			_WireThickness = _WireThickness * (1 - _Animate) + (_SinTime.w * 300 + 350) * _Animate;
 			float wireThickness = 800 - _WireThickness;
 
 			g2f o;

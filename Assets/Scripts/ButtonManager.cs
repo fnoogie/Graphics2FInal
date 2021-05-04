@@ -25,24 +25,28 @@ public class ButtonManager : MonoBehaviour
         WireFrameButton.onClick.AddListener(Wireframe);
         AnimationButton.onClick.AddListener(Animation);
         CubeWaveButton.onClick.AddListener(CubeWave);
+        MaterialSwap(0);
     }
 
     void Outline()
     {
         MaterialSwap(1);
-        DoF(false);
+        toggleDoF = false;
+        DoF();
     }
 
     void Iridescent()
     {
         MaterialSwap(2);
-        DoF(false);
+        toggleDoF = false;
+        DoF();
     }
 
     void Wireframe()
     {
         MaterialSwap(3);
-        DoF(false);
+        toggleDoF = false;
+        DoF();
     }
 
     void MaterialSwap(int index)
@@ -72,12 +76,12 @@ public class ButtonManager : MonoBehaviour
     {
         MaterialSwap(0);
         toggleDoF = !toggleDoF;
-        DoF(toggleDoF);
+        DoF();
     }
 
-    void DoF(bool onOff)
+    void DoF()
     {
-        Camera.main.GetComponent<DoFEffect>().enabled = onOff;
+        Camera.main.GetComponent<DoFEffect>().enabled = toggleDoF;
     }
 
     void Animate(bool animateObjects)

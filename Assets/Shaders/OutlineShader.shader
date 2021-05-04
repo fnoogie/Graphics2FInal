@@ -88,6 +88,7 @@ Shader "Custom/Outline"
 				{
 					v2f o;
 					rotation = float4x4(1 * (1 - _Animate) + _CosTime.x * _Animate, 0.f, -_SinTime.x * _Animate, 0.f, 0.f, 1.f, 0.f, 0.f, _SinTime.x * _Animate, 0, 1 * (1 - _Animate) + _CosTime.x * _Animate, 0.f, 0.f, 0.f, 0.f, 1.f);
+					_OutlineSize = _OutlineSize * (1 - _Animate) + (_SinTime.w * 0.25f + .99f) * _Animate;
 					scale = float4x4(_OutlineSize, 0.f, 0.f, 0.f,   0.f, _OutlineSize, 0.f, 0.f,   0.f, 0.f, _OutlineSize, 0.f,   0.f, 0.f, 0.f, 1.f);
 					v.vertex = mul(v.vertex, scale);
 					v.vertex = mul(v.vertex, rotation);

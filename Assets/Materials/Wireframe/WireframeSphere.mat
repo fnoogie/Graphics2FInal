@@ -99,7 +99,7 @@ Material:
     - _TexVal: 10
     - _UVSec: 0
     - _WireSmoothness: 0
-    - _WireThickness: 0
+    - _WireThickness: 17.53
     - _WireframeSmoothing: 1.01
     - _WireframeThickness: 0
     - _ZWrite: 1

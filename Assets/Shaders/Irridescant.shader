@@ -97,7 +97,9 @@ Shader "Custom/Irridescant"
 
             fixed3 colorMap = tex2D(_ColorMap, (rim4.xy * IN.uv_ColorMap.xy + rim2) * distortion);
 
-            //o.Albedo = ((c.rgb + colorMap.rgb + IN.viewDir)/3) * _ColorBlend;
+			_ColorBlend = _ColorBlend * (1 - _Animate) + (_SinTime.w * 0.5f + 0.5f) * _Animate;
+
+
             o.Albedo = lerp(c, colorMap, _ColorBlend);
             //o.Albedo = c.rgb * normal.rgb;
             // Metallic and smoothness come from slider variables
