@@ -28,7 +28,7 @@ Shader "Custom/Irridescant"
     SubShader
     {
         Tags { "Queue" = "Transparent" "RenderType"="Transparent" }
-        //ZWrite Off
+        ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
         Cull front
 
